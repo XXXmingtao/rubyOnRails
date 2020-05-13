@@ -24,6 +24,7 @@ class UserTest < ActiveSupport::TestCase
   test "email address should be saved as lower-case" do
     mixed_case_email = "Foo@ExAMPle.CoM"
     @user.email = mixed_case_email
+    @user.id = 1
     @user.save
     assert_equal mixed_case_email.downcase, @user.reload.email
   end
@@ -39,7 +40,7 @@ class UserTest < ActiveSupport::TestCase
 
   test "should be valid" do
     @user.name = "a" * 51
-    assert @user.valid?
+    assert_not @user.valid?
   end
 
   test "name should be present" do
