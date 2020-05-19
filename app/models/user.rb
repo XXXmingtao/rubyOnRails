@@ -26,12 +26,22 @@ class User < ApplicationRecord
   end
 
   def activate
-    update_attribute(:activated, true)
-    update_attribute(:activated_at, Time.zone.now)
+    User.update_attribute(:activated, true)
+    User.update_attribute(:activated_at, Time.zone.now)
   end
 
   def send_activation_email
     UserMailer.account_activation(self).deliver_now
+  end
+
+  def User.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
+
+  def User.new_token
+    SecureRandom.urlsafe_base64
   end
 
     private
@@ -47,15 +57,7 @@ class User < ApplicationRecord
 
   class << self
 
-    def User.digest(string)
-      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
-                                                  BCrypt::Engine.cost
-      BCrypt::Password.create(string, cost: cost)
-    end
-
-    def User.new_token
-      SecureRandom.urlsafe_base64
-    end
+    
 
   end
 
